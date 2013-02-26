@@ -1,4 +1,4 @@
-utility
+Ag.Utility
 =======
 
-TYPO3 Package with different small and often used utilities
+TYPO3 Flow package with different small and often used utilities.
