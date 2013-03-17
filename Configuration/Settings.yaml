@@ -1,0 +1,27 @@
+TYPO3:
+  Flow:
+    object:
+      excludeClasses:
+        'Psr.Log' : ['.*']
+        'monolog.monolog' : ['.*']
+        'mlehner.gelfphp' : ['.*']
+
+#    log:
+#      systemLogger:
+#        backend:
+#          - TYPO3\Flow\Log\Backend\FileBackend
+#          - Ag\Utility\Log\Backend\EmailBackend
+#        backendOptions:
+#          0:
+#            logFileURL: %FLOW_PATH_DATA%Logs/System.log
+#            createParentDirectories: TRUE
+#            severityThreshold: %LOG_INFO%
+#            maximumLogFileSize: 10485760
+#            logFilesToKeep: 1
+#            logMessageOrigin: FALSE
+#          1:
+#            severityThreshold: %LOG_CRIT%
+#            from: 'no-reply@agitso.com'
+#            subject: 'Log message'
+#            emails:
+#              - 'hmr@agitso.com'
