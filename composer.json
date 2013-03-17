@@ -5,7 +5,6 @@
     "version": "",
     "require": {
         "typo3/flow": "*",
-		"monolog/monolog":"dev-master",
 		"mlehner/gelf-php":"dev-master"
     },
     "autoload": {

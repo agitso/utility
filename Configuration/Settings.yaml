@@ -11,6 +11,7 @@ TYPO3:
 #        backend:
 #          - TYPO3\Flow\Log\Backend\FileBackend
 #          - Ag\Utility\Log\Backend\EmailBackend
+#          - Ag\Utility\Log\Backend\GelfBackend
 #        backendOptions:
 #          0:
 #            logFileURL: %FLOW_PATH_DATA%Logs/System.log
@@ -25,3 +26,7 @@ TYPO3:
 #            subject: 'Log message'
 #            emails:
 #              - 'hmr@agitso.com'
+#          2:
+#            severityThreshold: %LOG_INFO%
+#            host: '127.0.0.1'
+#            facility: '<SiteName>'
