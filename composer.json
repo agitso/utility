@@ -4,9 +4,7 @@
     "description": "",
     "version": "",
     "require": {
-        "typo3/flow": "*",
-		"monolog/monolog": "*",
-		"mlehner/gelf-php": "*"
+        "typo3/flow": "*"
     },
     "autoload": {
         "psr-0": {
