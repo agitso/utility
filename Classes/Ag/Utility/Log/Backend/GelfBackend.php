@@ -14,11 +14,6 @@ class GelfBackend extends \TYPO3\Flow\Log\Backend\AbstractBackend {
 	protected $site;
 
 	/**
-	 * @var array
-	 */
-	protected $severityMap;
-
-	/**
 	 * Carries out all actions necessary to prepare the logging backend, such as opening
 	 * the log file or opening a database connection.
 	 *
@@ -26,16 +21,6 @@ class GelfBackend extends \TYPO3\Flow\Log\Backend\AbstractBackend {
 	 * @api
 	 */
 	public function open() {
-		$this->severityMap = array(
-			LOG_EMERG => '600',
-			LOG_ALERT => '550',
-			LOG_CRIT => '500',
-			LOG_ERR => '400',
-			LOG_WARNING => '300',
-			LOG_NOTICE => '250',
-			LOG_INFO => '200',
-			LOG_DEBUG => '100',
-		);
 	}
 
 	/**
