@@ -2,8 +2,6 @@ TYPO3:
   Flow:
     object:
       excludeClasses:
-        'Psr.Log' : ['.*']
-        'monolog.monolog' : ['.*']
         'mlehner.gelfphp' : ['.*']
 
 #    log:
