@@ -5,7 +5,8 @@
     "version": "",
     "require": {
         "typo3/flow": "*",
-		"mlehner/gelf-php":"dev-master"
+		"mlehner/gelf-php":"dev-master",
+		"typo3/surf":"dev-master"
     },
     "autoload": {
         "psr-0": {
