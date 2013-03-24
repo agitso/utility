@@ -22,11 +22,12 @@ class Logger extends \TYPO3\Flow\Log\Logger {
 		$packageKey = (isset($explodedClassName[1])) ? $explodedClassName[1] : NULL;
 
 		$prefix = '';
+
 		while ($exception->getPrevious() !== NULL) {
 			$exception = $exception->getPrevious();
 			$prefix .= '-';
 
-			$additionalData[$prefix.'exception'] = $this->getExceptionLogMessage($exception->getPrevious());
+			$additionalData[$prefix.'exception'] = $this->getExceptionLogMessage($exception);
 		}
 
 		$this->log($message, LOG_CRIT, $additionalData, $packageKey, $className, $methodName);
