@@ -38,24 +38,27 @@ class CommandQueueService {
 
 	/**
 	 * @param string $tube
-	 * @return Object
+	 * @param int|null $timeout
+	 * @return Object|bool
 	 */
-	public function get($tube) {
+	public function get($tube, $timeout = NULL) {
 		$this->systemLogger->log('Wait for job from "'.$tube.'"', LOG_DEBUG);
 
 		$this->initializePheanstalk();
 		$job = $this->pheanstalk
 				->watch($tube)
 				->ignore('default')
-				->reserve();
+				->reserve($timeout);
 
-		$command = unserialize($job->getData());
+		if ($job instanceof \Pheanstalk_Job) {
+			$command = unserialize($job->getData());
+			$this->systemLogger->log('Got job from "'.$tube.'" ('.get_class($command).')', LOG_DEBUG, serialize($command));
+			$this->pheanstalk->delete($job);
 
-		$this->systemLogger->log('Got job from "'.$tube.'" ('.get_class($command).')', LOG_DEBUG, serialize($command));
+			return $command;
+		}
 
-		$this->pheanstalk->delete($job);
-
-		return $command;
+		return FALSE;
 	}
 
 	protected function initializePheanstalk() {
