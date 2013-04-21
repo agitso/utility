@@ -1,3 +1,8 @@
+Ag:
+  Utility:
+    CommandQueue:
+      Log: FALSE
+
 TYPO3:
   Flow:
     object:

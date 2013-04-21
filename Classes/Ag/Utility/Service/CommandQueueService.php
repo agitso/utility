@@ -23,6 +23,18 @@ class CommandQueueService {
 	protected $pheanstalk;
 
 	/**
+	 * @var array
+	 */
+	protected $settings;
+
+	/**
+	 * @param array $settings
+	 */
+	public function injectSettings(array $settings) {
+		$this->settings = $settings;
+	}
+
+	/**
 	 * @param $command
 	 * @param string $tube
 	 * @param int $priority
@@ -33,7 +45,9 @@ class CommandQueueService {
 		$serializedCommand = serialize($command);
 		$this->pheanstalk->putInTube($tube, $serializedCommand, $priority);
 
-		$this->systemLogger->log('Put command in tube "'.$tube.'"', LOG_DEBUG, $serializedCommand);
+		if($this->loggingEnabled()) {
+			$this->systemLogger->log('Put command in tube "' . $tube . '"', LOG_DEBUG, $serializedCommand);
+		}
 	}
 
 	/**
@@ -42,7 +56,9 @@ class CommandQueueService {
 	 * @return Object|bool
 	 */
 	public function get($tube, $timeout = NULL) {
-		$this->systemLogger->log('Wait for job from "'.$tube.'"', LOG_DEBUG);
+		if($this->loggingEnabled()) {
+			$this->systemLogger->log('Wait for job from "' . $tube . '"', LOG_DEBUG);
+		}
 
 		$this->initializePheanstalk();
 		$job = $this->pheanstalk
@@ -52,7 +68,9 @@ class CommandQueueService {
 
 		if ($job instanceof \Pheanstalk_Job) {
 			$command = unserialize($job->getData());
-			$this->systemLogger->log('Got job from "'.$tube.'" ('.get_class($command).')', LOG_DEBUG, serialize($command));
+			if($this->loggingEnabled()) {
+				$this->systemLogger->log('Got job from "' . $tube . '" (' . get_class($command) . ')', LOG_DEBUG, serialize($command));
+			}
 			$this->pheanstalk->delete($job);
 
 			return $command;
@@ -65,5 +83,14 @@ class CommandQueueService {
 		if ($this->pheanstalk === NULL) {
 			$this->pheanstalk = new \Pheanstalk_Pheanstalk('127.0.0.1');
 		}
+	}
+
+	/**
+	 * @return bool
+	 */
+	protected function loggingEnabled() {
+		return array_key_exists('CommandQueue', $this->settings) &&
+				array_key_exists('Log', $this->settings['CommandQueue']) &&
+				$this->settings['CommandQueue']['Log'] === TRUE;
 	}
 }
