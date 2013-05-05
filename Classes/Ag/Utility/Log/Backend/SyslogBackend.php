@@ -43,7 +43,7 @@ class SyslogBackend extends \TYPO3\Flow\Log\Backend\AbstractBackend {
 	 * @api
 	 */
 	public function append($message, $severity = LOG_INFO, $additionalData = NULL, $packageKey = NULL, $className = NULL, $methodName = NULL) {
-		if ($severity > $this->severityThreshold || empty($this->key)) {
+		if ($severity > $this->severityThreshold || empty($this->site)) {
 			return;
 		}
 
