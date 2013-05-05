@@ -56,7 +56,8 @@ class LogglyBackend extends \TYPO3\Flow\Log\Backend\AbstractBackend {
 
 		$ch = curl_init();
 		curl_setopt($ch, CURLOPT_URL, 'https://logs.loggly.com/inputs/'.$this->key);
-		curl_setopt($ch, CURLOPT_POST, true );
+		curl_setopt($ch, CURLOPT_POST, TRUE);
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, TRUE);
 		curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: text/plain'));
 		curl_setopt($ch, CURLOPT_POSTFIELDS, $output);
 		curl_exec($ch);
