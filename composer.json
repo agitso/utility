@@ -4,7 +4,7 @@
     "description": "",
     "version": "",
     "require": {
-        "typo3/flow": "*",
+		"typo3/flow": "2.0.*@beta",
 		"mlehner/gelf-php":"dev-master",
 		"typo3/surf":"dev-master",
 		"pda/pheanstalk":"dev-master"
