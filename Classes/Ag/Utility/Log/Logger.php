@@ -14,7 +14,10 @@ class Logger extends \TYPO3\Flow\Log\Logger {
 		$backTrace = $exception->getTrace();
 		$className = isset($backTrace[0]['class']) ? $backTrace[0]['class'] : '?';
 		$methodName = isset($backTrace[0]['function']) ? $backTrace[0]['function'] : '?';
-		$message = $this->getExceptionLogMessage($exception);
+
+		$message = 'Uncaught exception : ' . get_class($exception) . '. ';
+
+		$message .= $this->getExceptionLogMessage($exception);
 
 		$additionalData['backtrace'] = \TYPO3\Flow\Error\Debugger::getBacktraceCode($backTrace, FALSE, TRUE);
 
@@ -30,7 +33,9 @@ class Logger extends \TYPO3\Flow\Log\Logger {
 			$additionalData[$prefix.'exception'] = $this->getExceptionLogMessage($exception);
 		}
 
-		$this->log($message, LOG_CRIT, $additionalData, $packageKey, $className, $methodName);
+		$severity = ($exception instanceof \TYPO3\Flow\Mvc\Exception\NoSuchActionException) ? LOG_INFO : LOG_CRIT;
+
+		$this->log($message, $severity, $additionalData, $packageKey, $className, $methodName);
 	}
 }
 
