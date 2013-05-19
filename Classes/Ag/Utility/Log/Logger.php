@@ -33,7 +33,10 @@ class Logger extends \TYPO3\Flow\Log\Logger {
 			$additionalData[$prefix.'exception'] = $this->getExceptionLogMessage($exception);
 		}
 
-		$severity = ($exception instanceof \TYPO3\Flow\Mvc\Exception\NoSuchActionException) ? LOG_INFO : LOG_CRIT;
+		$severity = (
+				$exception instanceof \TYPO3\Flow\Mvc\Exception\NoSuchActionException ||
+				$exception instanceof \TYPO3\Flow\Mvc\Controller\Exception\InvalidControllerException
+		) ? LOG_INFO : LOG_CRIT;
 
 		$this->log($message, $severity, $additionalData, $packageKey, $className, $methodName);
 	}
