@@ -3,6 +3,13 @@ Ag:
     CommandQueue:
       Log: FALSE
 
+    #StatsdWriter:
+      #enabled: TRUE
+      #keyPrefix: demo
+      #host: 127.0.0.1
+      #port: 8125
+
+
 TYPO3:
   Flow:
     object:
