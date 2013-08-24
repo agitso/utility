@@ -14,27 +14,12 @@ class StatsdAspect {
 	protected $statsdWriter;
 
 	/**
-	 * @var string
-	 */
-	protected $keyPrefix;
-
-	/**
-	 * @param array $settings
-	 */
-	public function injectSettings($settings) {
-		$keyPrefix = trim($settings['StatsdWriter']['keyPrefix']);
-		if(!empty($keyPrefix)) {
-			$this->keyPrefix = $keyPrefix;
-		}
-	}
-
-	/**
 	 * @param \TYPO3\Flow\Aop\JoinPointInterface $joinPoint
 	 * @Flow\AfterReturning("methodAnnotatedWith(Ag\Utility\Statsd\Annotations\Count)")
 	 * @return string
 	 */
 	public function count(\TYPO3\Flow\Aop\JoinPointInterface $joinPoint) {
-		$this->statsdWriter->send($this->getKeyFromJoinPoint($joinPoint).':1|c');
+		$this->statsdWriter->count($this->getKeyFromJoinPoint($joinPoint));
 	}
 
 	/**
@@ -49,7 +34,7 @@ class StatsdAspect {
 
 		$time = (microtime(true) - $start) * 1000;
 
-		$this->statsdWriter->send($this->getKeyFromJoinPoint($joinPoint).':'.$time.'|ms');
+		$this->statsdWriter->time($this->getKeyFromJoinPoint($joinPoint), $time);
 
 		return $result;
 	}
@@ -66,7 +51,7 @@ class StatsdAspect {
 		$intResult = intval($result);
 
 		if(('' . $result) === ('' . $intResult)) {
-			$this->statsdWriter->send($this->getKeyFromJoinPoint($joinPoint).':'.$result.'|g');
+			$this->statsdWriter->gauge($this->getKeyFromJoinPoint($joinPoint), $result);
 		}
 
 		return $result;
@@ -77,8 +62,7 @@ class StatsdAspect {
 	 * @return string
 	 */
 	protected function getKeyFromJoinPoint(\TYPO3\Flow\Aop\JoinPointInterface $joinPoint) {
-		$key = !empty($this->keyPrefix) ? $this->keyPrefix . '.' : '';
-		$key .= $joinPoint->getClassName().'.'.$joinPoint->getMethodName();
+		$key = $joinPoint->getClassName().'.'.$joinPoint->getMethodName();
 
 		return str_replace('\\', '.', $key);
 	}

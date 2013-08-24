@@ -25,18 +25,48 @@ class StatsdWriter {
 	protected $enabled;
 
 	/**
+	 * @var string
+	 */
+	protected $keyPrefix;
+
+	/**
 	 * @param array $settings
 	 */
 	public function injectSettings($settings) {
 		$this->enabled = $settings['StatsdWriter']['enabled'] === TRUE;
 		$this->host = $settings['StatsdWriter']['host'];
 		$this->port = $settings['StatsdWriter']['port'];
+		$this->keyPrefix = $settings['StatsdWriter']['keyPrefix'];
 	}
+
+	/**
+	 * @param string $key
+	 */
+	public function count($key) {
+		$this->send($this->keyPrefix.'.'.$key.':1|c');
+	}
+
+	/**
+	 * @param string $key
+	 * @param int $ms
+	 */
+	public function time($key, $ms) {
+		$this->send($this->keyPrefix.'.'.$key.':'.intval($ms).'|ms');
+	}
+
+	/**
+	 * @param string $key
+	 * @param int $value
+	 */
+	public function gauge($key, $value) {
+		$this->send($this->keyPrefix.'.'.$key.':'.intval($value).'|g');
+	}
+
 
 	/**
 	 * @param string $message
 	 */
-	public function send($message) {
+	protected function send($message) {
 
 		if (!$this->enabled || empty($message)) {
 			return;
