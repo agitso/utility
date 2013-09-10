@@ -34,9 +34,9 @@ class StatsdWriter {
 	 */
 	public function injectSettings($settings) {
 		$this->enabled = $settings['StatsdWriter']['enabled'] === TRUE;
-		$this->host = $settings['StatsdWriter']['host'];
-		$this->port = $settings['StatsdWriter']['port'];
-		$this->keyPrefix = $settings['StatsdWriter']['keyPrefix'];
+		$this->host = array_key_exists('host', $settings['StatsdWriter']) ? $settings['StatsdWriter']['host'] : NULL;
+		$this->port = array_key_exists('post', $settings['StatsdWriter']) ? $settings['StatsdWriter']['port'] : NULL;
+		$this->keyPrefix = array_key_exists('keyPrefix', $settings['StatsdWriter']) ?  $settings['StatsdWriter']['keyPrefix'] : NULL;
 	}
 
 	/**
