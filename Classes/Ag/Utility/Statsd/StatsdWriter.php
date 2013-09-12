@@ -35,7 +35,7 @@ class StatsdWriter {
 	public function injectSettings($settings) {
 		$this->enabled = $settings['StatsdWriter']['enabled'] === TRUE;
 		$this->host = array_key_exists('host', $settings['StatsdWriter']) ? $settings['StatsdWriter']['host'] : NULL;
-		$this->port = array_key_exists('post', $settings['StatsdWriter']) ? $settings['StatsdWriter']['port'] : NULL;
+		$this->port = array_key_exists('port', $settings['StatsdWriter']) ? $settings['StatsdWriter']['port'] : NULL;
 		$this->keyPrefix = array_key_exists('keyPrefix', $settings['StatsdWriter']) ?  $settings['StatsdWriter']['keyPrefix'] : NULL;
 	}
 
@@ -67,7 +67,6 @@ class StatsdWriter {
 	 * @param string $message
 	 */
 	protected function send($message) {
-
 		if (!$this->enabled || empty($message)) {
 			return;
 		}
