@@ -30,6 +30,12 @@ class StatsdWriter {
 	protected $keyPrefix;
 
 	/**
+	 * @var \TYPO3\Flow\Log\SystemLoggerInterface
+	 * @Flow\Inject
+	 */
+	protected $systemLogger;
+
+	/**
 	 * @param array $settings
 	 */
 	public function injectSettings($settings) {
@@ -67,7 +73,12 @@ class StatsdWriter {
 	 * @param string $message
 	 */
 	protected function send($message) {
-		if (!$this->enabled || empty($message)) {
+		if(empty($message)) {
+			return;
+		}
+
+		if (!$this->enabled) {
+			$this->systemLogger->log('Statsd Writer send: ' . $message);
 			return;
 		}
 
