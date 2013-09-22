@@ -25,6 +25,11 @@ class StatsdWriter {
 	protected $enabled;
 
 	/**
+	 * @var bool
+	 */
+	protected $logToSystemLog;
+
+	/**
 	 * @var string
 	 */
 	protected $keyPrefix;
@@ -40,6 +45,7 @@ class StatsdWriter {
 	 */
 	public function injectSettings($settings) {
 		$this->enabled = $settings['StatsdWriter']['enabled'] === TRUE;
+		$this->logToSystemLog = $settings['StatsdWriter']['logToSystemLog'] === TRUE;
 		$this->host = array_key_exists('host', $settings['StatsdWriter']) ? $settings['StatsdWriter']['host'] : NULL;
 		$this->port = array_key_exists('port', $settings['StatsdWriter']) ? $settings['StatsdWriter']['port'] : NULL;
 		$this->keyPrefix = array_key_exists('keyPrefix', $settings['StatsdWriter']) ?  $settings['StatsdWriter']['keyPrefix'] : NULL;
@@ -77,22 +83,23 @@ class StatsdWriter {
 			return;
 		}
 
-		if (!$this->enabled) {
+		if ($this->logToSystemLog) {
 			$this->systemLogger->log('Statsd Writer send: ' . $message);
-			return;
 		}
 
-		// Wrap this in a try/catch - failures in any of this should be silently ignored
-		try {
-			$fp = fsockopen("udp://$this->host", $this->port);
-			if (!$fp) {
-				return;
+		if($this->enabled) {
+			// Wrap this in a try/catch - failures in any of this should be silently ignored
+			try {
+				$fp = fsockopen("udp://$this->host", $this->port);
+				if (!$fp) {
+					return;
+				}
+
+				fwrite($fp, $message);
+
+				fclose($fp);
+			} catch (\Exception $e) {
 			}
-
-			fwrite($fp, $message);
-
-			fclose($fp);
-		} catch (\Exception $e) {
 		}
 	}
 }
