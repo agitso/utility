@@ -36,6 +36,17 @@ class GelfBackend extends \TYPO3\Flow\Log\Backend\AbstractBackend {
 	 * @api
 	 */
 	public function append($message, $severity = LOG_INFO, $additionalData = NULL, $packageKey = NULL, $className = NULL, $methodName = NULL) {
+
+		// Degrade 404 log entries to INFO and "tag" with 404
+		if (strpos($message, 'No route matched the route') !== FALSE
+				|| strpos($message, 'does not exist in controller') !== FALSE
+				|| strpos($message, 'No controller could be resolved which would match your request') !== FALSE
+		) {
+			$severity = LOG_INFO;
+			$message = '404: ' . $message;
+		}
+
+
 		if ($severity > $this->severityThreshold) {
 			return;
 		}
@@ -44,21 +55,21 @@ class GelfBackend extends \TYPO3\Flow\Log\Backend\AbstractBackend {
 		$fullMessage = $message;
 
 		if (!empty($additionalData)) {
-			$fullMessage .= PHP_EOL .PHP_EOL .PHP_EOL . $this->getFormattedVarDump($additionalData);
+			$fullMessage .= PHP_EOL . PHP_EOL . PHP_EOL . $this->getFormattedVarDump($additionalData);
 		}
 
-		if($severity <= LOG_WARNING) {
-			$fullMessage .= PHP_EOL .PHP_EOL . 'GET:' . PHP_EOL . $this->getFormattedVarDump($_GET);
-			$fullMessage .= PHP_EOL .PHP_EOL .'POST:' . PHP_EOL . $this->getFormattedVarDump($_POST);
-			$fullMessage .= PHP_EOL .PHP_EOL .'FILES:' . PHP_EOL . $this->getFormattedVarDump($_FILES);
-			$fullMessage .= PHP_EOL .PHP_EOL .'COOKIE:' . PHP_EOL . $this->getFormattedVarDump($_COOKIE);
-			$fullMessage .= PHP_EOL .PHP_EOL .'SERVER:' . PHP_EOL . $this->getFormattedVarDump($_SERVER);
+		if ($severity <= LOG_WARNING) {
+			$fullMessage .= PHP_EOL . PHP_EOL . 'GET:' . PHP_EOL . $this->getFormattedVarDump($_GET);
+			$fullMessage .= PHP_EOL . PHP_EOL . 'POST:' . PHP_EOL . $this->getFormattedVarDump($_POST);
+			$fullMessage .= PHP_EOL . PHP_EOL . 'FILES:' . PHP_EOL . $this->getFormattedVarDump($_FILES);
+			$fullMessage .= PHP_EOL . PHP_EOL . 'COOKIE:' . PHP_EOL . $this->getFormattedVarDump($_COOKIE);
+			$fullMessage .= PHP_EOL . PHP_EOL . 'SERVER:' . PHP_EOL . $this->getFormattedVarDump($_SERVER);
 		}
 
 		$publisher = new \Gelf\MessagePublisher($this->getHost());
 
 		$message = new \Gelf\Message();
-		$message->setFile($className.'::'.$methodName.'()');
+		$message->setFile($className . '::' . $methodName . '()');
 		$message->setLevel($severity);
 		$message->setHost($this->getSite());
 		$message->setFacility($packageKey);
