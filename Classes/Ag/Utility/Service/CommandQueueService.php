@@ -2,8 +2,6 @@
 
 namespace Ag\Utility\Service;
 
-require_once(FLOW_PATH_PACKAGES . '/Libraries/pda/pheanstalk/pheanstalk_init.php');
-
 use TYPO3\Flow\Annotations as Flow;
 
 /**
@@ -18,7 +16,7 @@ class CommandQueueService {
 	protected $systemLogger;
 
 	/**
-	 * @var \Pheanstalk_Pheanstalk
+	 * @var \Pheanstalk\Pheanstalk
 	 */
 	protected $pheanstalk;
 
@@ -66,7 +64,7 @@ class CommandQueueService {
 				->ignore('default')
 				->reserve($timeout);
 
-		if ($job instanceof \Pheanstalk_Job) {
+		if ($job instanceof \Pheanstalk\Job) {
 			$command = unserialize($job->getData());
 			if($this->loggingEnabled()) {
 				$this->systemLogger->log('Got job from "' . $tube . '" (' . get_class($command) . ')', LOG_DEBUG, serialize($command));
@@ -81,7 +79,7 @@ class CommandQueueService {
 
 	protected function initializePheanstalk() {
 		if ($this->pheanstalk === NULL) {
-			$this->pheanstalk = new \Pheanstalk_Pheanstalk('127.0.0.1');
+			$this->pheanstalk = new \Pheanstalk\Pheanstalk('127.0.0.1');
 		}
 	}
 
